@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWETA - Your Work Tracking Buddy 💜</title>
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiU1dFVEEgLSBXb3JrIFRyYWNrZXIiLCJzaG9ydF9uYW1lIjoiU1dFVEEiLCJzdGFydF91cmwiOiIuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiI2ZmZTRmNCIsInRoZW1lX2NvbG9yIjoiI2ZmNmI5ZCIsIm9yaWVudGF0aW9uIjoicG9ydHJhaXQifQ==">
+    <meta name="theme-color" content="#ff6b9d">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 25%, #ff6b9d 50%, #c44569 75%, #a29bfe 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            animation: backgroundShift 15s ease infinite;
+            background-size: 200% 200%;
+        }
+
+        @keyframes backgroundShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: linear-gradient(to bottom, #ffe4f4, #fff5f5);
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(255, 107, 157, 0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 650px;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b9d 0%, #feca57 100%);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            position: relative;
+            border-bottom: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 5px;
+        }
+
+        .header .subtitle {
+            font-size: 12px;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .avatar {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            border: 3px solid white;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .status {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 8px rgba(74, 222, 128, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+            }
+        }
+
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZTRmNCIgb3BhY2l0eT0iMC40IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=');
+        }
+
+        .chat-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-container::-webkit-scrollbar-track {
+            background: rgba(255, 107, 157, 0.1);
+            border-radius: 10px;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #ff6b9d, #feca57);
+            border-radius: 10px;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 14px 18px;
+            border-radius: 20px;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .user-message {
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+        }
+
+        .bot-message {
+            background: white;
+            color: #2d3436;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 107, 157, 0.2);
+        }
+
+        .bot-message.special {
+            background: linear-gradient(135deg, #ff6b9d 0%, #feca57 100%);
+            color: white;
+            border: none;
+        }
+
+        .time-label {
+            font-size: 10px;
+            color: #b2bec3;
+            text-align: center;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 4px;
+            padding: 14px 18px;
+            background: white;
+            border-radius: 20px;
+            border-bottom-left-radius: 5px;
+            align-self: flex-start;
+            max-width: 70px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 107, 157, 0.2);
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: #ff6b9d;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                background: #ff6b9d;
+            }
+            30% {
+                transform: translateY(-10px);
+                background: #feca57;
+            }
+        }
+
+        .input-container {
+            padding: 20px;
+            background: linear-gradient(to top, #ffe4f4, #fff5f5);
+            border-top: 2px solid rgba(255, 107, 157, 0.2);
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 14px 20px;
+            border: 2px solid rgba(255, 107, 157, 0.3);
+            border-radius: 25px;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: white;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 500;
+        }
+
+        .input-field:focus {
+            border-color: #ff6b9d;
+            box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
+        }
+
+        .input-field::placeholder {
+            color: #dfe6e9;
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, #ff6b9d 0%, #feca57 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 107, 157, 0.3);
+        }
+
+        .send-button:hover {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .send-button:active {
+            transform: scale(0.95);
+        }
+
+        .emoji-sparkle {
+            position: fixed;
+            pointer-events: none;
+            animation: sparkle 1s ease-out forwards;
+            font-size: 20px;
+        }
+
+        @keyframes sparkle {
+            0% {
+                transform: translateY(0) scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .config-panel {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100%;
+            background: linear-gradient(to bottom, #fff5f5, #ffe4f4);
+            box-shadow: -2px 0 20px rgba(255, 107, 157, 0.2);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .config-panel.open {
+            right: 0;
+        }
+
+        .config-panel h2 {
+            color: #ff6b9d;
+            font-size: 24px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .config-toggle {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            padding: 8px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .config-toggle:hover {
+            transform: rotate(180deg);
+        }
+
+        .config-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid rgba(255, 107, 157, 0.3);
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 500;
+            transition: border-color 0.3s ease;
+        }
+
+        .config-input:focus {
+            outline: none;
+            border-color: #ff6b9d;
+        }
+
+        .config-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #ff6b9d 0%, #feca57 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            font-size: 15px;
+            transition: transform 0.2s ease;
+        }
+
+        .config-button:hover {
+            transform: scale(1.02);
+        }
+
+        .config-button:active {
+            transform: scale(0.98);
+        }
+
+        .config-button.danger {
+            background: linear-gradient(135deg, #ee5a6f, #f53b57);
+        }
+
+        .error-message {
+            color: #ee5a6f;
+            font-size: 13px;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .success-message {
+            color: #00b894;
+            font-size: 13px;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .cute-divider {
+            text-align: center;
+            margin: 20px 0;
+            color: #ff6b9d;
+            font-size: 20px;
+        }
+
+        .info-box {
+            background: white;
+            border: 2px solid rgba(255, 107, 157, 0.2);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .info-box h3 {
+            color: #ff6b9d;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .info-box ol {
+            font-size: 13px;
+            color: #636e72;
+            padding-left: 20px;
+        }
+
+        .info-box li {
+            margin: 5px 0;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff6b9d;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="config-toggle" onclick="toggleConfig()">⚙️</button>
+            <div class="status">
+                <span class="status-dot"></span>
+                <span>Online</span>
+            </div>
+            <div class="avatar">🤖</div>
+            <h1>SWETA 💜</h1>
+            <div class="subtitle">Shitty Work Executive Tracking Assistant</div>
+        </div>
+        
+        <div class="chat-container" id="chatContainer">
+            <div class="time-label" id="currentTime"></div>
+            <div class="bot-message message special">
+                ✨ Annyeonghaseyo! I'm SWETA, your adorable work tracking buddy! I'll check in with you throughout the day to help track your tasks. Fighting! 💪
+            </div>
+        </div>
+        
+        <div class="typing-indicator" id="typingIndicator">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        
+        <div class="input-container">
+            <input 
+                type="text" 
+                class="input-field" 
+                id="messageInput" 
+                placeholder="Type your response here... 💬"
+                onkeypress="handleKeyPress(event)"
+            >
+            <button class="send-button" onclick="sendMessage()">
+                <span style="font-size: 20px;">💜</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="config-panel" id="configPanel">
+        <h2>⚙️ Settings</h2>
+        <div class="cute-divider">~ ♡ ~</div>
+        
+        <p style="margin: 10px 0; font-size: 14px; color: #636e72;">Configure your Google Sheets integration to save all your work logs! 🎯</p>
+        
+        <input 
+            type="text" 
+            class="config-input" 
+            id="scriptUrl" 
+            placeholder="Google Apps Script URL 📝"
+            value=""
+        >
+        
+        <button class="config-button" onclick="saveConfig()">💾 Save Configuration</button>
+        <button class="config-button danger" onclick="clearConfig()">🗑️ Clear Configuration</button>
+        
+        <div id="configMessage"></div>
+        
+        <div class="cute-divider">~ ♡ ~</div>
+        
+        <div class="info-box">
+            <h3>📚 Quick Setup Guide</h3>
+            <ol>
+                <li>Create a new Google Sheet 📊</li>
+                <li>Go to Extensions → Apps Script 🔧</li>
+                <li>Copy the provided script code 📋</li>
+                <li>Deploy as Web App 🚀</li>
+                <li>Paste the Web App URL here 🔗</li>
+            </ol>
+        </div>
+
+        <div class="info-box" style="margin-top: 15px;">
+            <h3>⏰ Schedule</h3>
+            <p style="font-size: 13px; color: #636e72; line-height: 1.6;">
+                • <b>Mon-Sat:</b> Hourly check-ins from 8:30 AM to 9:30 PM IST<br>
+                • <b>Morning:</b> 8:00 AM special greeting<br>
+                • <b>Sunday:</b> Single check-in at noon 🌟
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Initialize state
+        let scriptUrl = '';
+        let lastCheckTime = null;
+        let checkInterval = null;
+
+        // Load configuration on startup
+        window.addEventListener('load', () => {
+            loadConfig();
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 60000); // Update time every minute
+            startScheduler();
+            checkForScheduledMessages();
+        });
+
+        function updateCurrentTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-IN', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            const dateStr = now.toLocaleDateString('en-IN', { 
+                weekday: 'short', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+            
+            const timeLabel = document.getElementById('currentTime');
+            if (timeLabel) {
+                timeLabel.textContent = `${dateStr} • ${timeStr}`;
+            }
+        }
+
+        function toggleConfig() {
+            const panel = document.getElementById('configPanel');
+            panel.classList.toggle('open');
+            createSparkle(window.innerWidth / 2, window.innerHeight / 2);
+        }
+
+        function loadConfig() {
+            const saved = localStorage.getItem('googleScriptUrl');
+            if (saved) {
+                scriptUrl = saved;
+                document.getElementById('scriptUrl').value = saved;
+            }
+            
+            // Load last check time
+            const savedTime = localStorage.getItem('lastCheckTime');
+            if (savedTime) {
+                lastCheckTime = new Date(savedTime);
+            }
+        }
+
+        function saveConfig() {
+            const url = document.getElementById('scriptUrl').value.trim();
+            const messageDiv = document.getElementById('configMessage');
+            
+            if (!url) {
+                messageDiv.innerHTML = '<div class="error-message">⚠️ Please enter a URL!</div>';
+                return;
+            }
+            
+            scriptUrl = url;
+            localStorage.setItem('googleScriptUrl', url);
+            messageDiv.innerHTML = '<div class="success-message">✅ Configuration saved successfully!</div>';
+            
+            setTimeout(() => {
+                messageDiv.innerHTML = '';
+                toggleConfig();
+            }, 2000);
+        }
+
+        function clearConfig() {
+            scriptUrl = '';
+            localStorage.removeItem('googleScriptUrl');
+            document.getElementById('scriptUrl').value = '';
+            document.getElementById('configMessage').innerHTML = '<div class="success-message">🗑️ Configuration cleared!</div>';
+        }
+
+        function createSparkle(x, y) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'emoji-sparkle';
+            sparkle.textContent = '✨';
+            sparkle.style.left = x + 'px';
+            sparkle.style.top = y + 'px';
+            document.body.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 1000);
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message to chat
+            addMessage(message, 'user');
+            
+            // Clear input
+            input.value = '';
+            
+            // Create sparkle effect
+            const button = document.querySelector('.send-button');
+            const rect = button.getBoundingClientRect();
+            createSparkle(rect.left + rect.width / 2, rect.top);
+            
+            // Determine the time slot for logging
+            const timeSlot = getCurrentTimeSlot();
+            
+            // Save to Google Sheets if configured
+            if (scriptUrl) {
+                saveToGoogleSheets(message, timeSlot);
+            }
+            
+            // Show typing indicator
+            showTyping();
+            
+            // Get bot response
+            const botResponse = await getBotResponse(message);
+            
+            // Hide typing indicator
+            hideTyping();
+            
+            // Add bot response
+            addMessage(botResponse, 'bot');
+        }
+
+        function getCurrentTimeSlot() {
+            const now = new Date();
+            const day = now.getDay();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            
+            // Check if it's a Sunday work response
+            if (day === 0) {
+                return `Sunday work ${now.toLocaleDateString('en-IN')}`;
+            }
+            
+            // Check if it's a morning misc response (8 AM)
+            if (hours === 8 && minutes < 30) {
+                return `misc ${now.toLocaleDateString('en-IN')}`;
+            }
+            
+            // Calculate the time slot for regular hourly check-ins
+            let slotStart, slotEnd;
+            
+            if (hours < 8 || (hours === 8 && minutes < 30)) {
+                // Before 8:30 AM - count as evening work
+                return `misc ${now.toLocaleDateString('en-IN')}`;
+            } else if (hours >= 21 && minutes >= 30) {
+                // After 9:30 PM
+                return `misc ${now.toLocaleDateString('en-IN')}`;
+            } else {
+                // Regular time slots
+                if (minutes >= 30) {
+                    slotStart = `${hours - 1}:30`;
+                    slotEnd = `${hours}:30`;
+                } else {
+                    slotStart = `${hours - 1}:30`;
+                    slotEnd = `${hours}:30`;
+                }
+                
+                // Format times properly
+                const formatTime = (timeStr) => {
+                    const [h, m] = timeStr.split(':');
+                    const hour = parseInt(h);
+                    const ampm = hour >= 12 ? 'PM' : 'AM';
+                    const displayHour = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+                    return `${displayHour}:${m} ${ampm}`;
+                };
+                
+                return `${formatTime(slotStart)} - ${formatTime(slotEnd)}`;
+            }
+        }
+
+        function addMessage(text, sender, isSpecial = false) {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message ${isSpecial ? 'special' : ''}`;
+            messageDiv.textContent = text;
+            chatContainer.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function showTyping() {
+            document.getElementById('typingIndicator').style.display = 'flex';
+        }
+
+        function hideTyping() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        async function getBotResponse(message) {
+            // Simulate processing time
+            await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 700));
+            
+            const responses = [
+                "Great work! Keep it up! 화이팅! 💪",
+                "You're doing amazing! I'm so proud of you! 🌟",
+                "Logged! You're such a hard worker! 사랑해! 💜",
+                "Got it! You're killing it today! ✨",
+                "Noted! You deserve a pat on the back! 🎉",
+                "Awesome! You're my favorite human! 💕",
+                "Recorded! You're absolutely crushing it! 🚀",
+                "Perfect! You're a superstar! ⭐",
+                "Saved! Keep being amazing! 대박! 🌈"
+            ];
+            
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+
+        async function saveToGoogleSheets(userMessage, timeSlot) {
+            if (!scriptUrl) return;
+            
+            try {
+                const response = await fetch(scriptUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        timestamp: new Date().toISOString(),
+                        timeSlot: timeSlot,
+                        workDone: userMessage,
+                        date: new Date().toLocaleDateString('en-IN')
+                    })
+                });
+                
+                console.log('Data saved to Google Sheets');
+            } catch (error) {
+                console.error('Error saving to Google Sheets:', error);
+            }
+        }
+
+        function startScheduler() {
+            checkInterval = setInterval(checkForScheduledMessages, 60000); // Check every minute
+        }
+
+        function checkForScheduledMessages() {
+            const now = new Date();
+            const day = now.getDay();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            
+            // Create a time key for checking if we've already sent a message
+            const timeKey = `${now.toDateString()}_${hours}_${minutes}`;
+            const lastSentKey = localStorage.getItem('lastMessageSent');
+            
+            // Don't send if we've already sent a message in this minute
+            if (lastSentKey === timeKey) return;
+            
+            let shouldSendMessage = false;
+            let messageToSend = '';
+            
+            // Sunday noon check (12:00 PM)
+            if (day === 0 && hours === 12 && minutes === 0) {
+                messageToSend = "Happy Sunday! 🌈 Enjoy your day off! Hope you're not working! 😊 Do let me know if you did any work though. Give Ishan a kiss for me! 💋";
+                shouldSendMessage = true;
+            }
+            // Morning message (8:00 AM, Mon-Sat)
+            else if (day !== 0 && hours === 8 && minutes === 0) {
+                messageToSend = "Good morning! ☀️ Hope you have a productive and generally happy workday! 🌸 Did you do anything last night after I left or this morning that we haven't documented? 📝";
+                shouldSendMessage = true;
+            }
+            // Hourly checks (8:30 AM to 9:30 PM, Mon-Sat)
+            else if (day !== 0 && minutes === 30) {
+                if ((hours === 8) || (hours >= 9 && hours <= 21)) {
+                    messageToSend = "What did you do in the last hour? 💭";
+                    shouldSendMessage = true;
+                }
+            }
+            
+            if (shouldSendMessage) {
+                // Save that we've sent this message
+                localStorage.setItem('lastMessageSent', timeKey);
+                
+                // Add the scheduled message to chat
+                addMessage(messageToSend, 'bot', true);
+                
+                // Play a notification sound (optional)
+                playNotificationSound();
+                
+                // Send browser notification if permitted
+                sendBrowserNotification(messageToSend);
+            }
+        }
+
+        function playNotificationSound() {
+            // Create a simple beep sound using Web Audio API
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+
+        function sendBrowserNotification(message) {
+            if ('Notification' in window) {
+                if (Notification.permission === 'granted') {
+                    new Notification('SWETA - Work Check-in! 💜', {
+                        body: message,
+                        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🤖</text></svg>',
+                        badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">💜</text></svg>'
+                    });
+                } else if (Notification.permission !== 'denied') {
+                    Notification.requestPermission().then(permission => {
+                        if (permission === 'granted') {
+                            sendBrowserNotification(message);
+                        }
+                    });
+                }
+            }
+        }
+
+        // Request notification permission on first load
+        if ('Notification' in window && Notification.permission === 'default') {
+            setTimeout(() => {
+                Notification.requestPermission();
+            }, 3000);
+        }
+
+        // Service Worker for PWA
+        const swCode = `
+            self.addEventListener('install', event => {
+                self.skipWaiting();
+            });
+            
+            self.addEventListener('activate', event => {
+                event.waitUntil(clients.claim());
+            });
+            
+            self.addEventListener('fetch', event => {
+                event.respondWith(fetch(event.request));
+            });
+        `;
+        
+        // Create service worker
+        const blob = new Blob([swCode], { type: 'application/javascript' });
+        const swUrl = URL.createObjectURL(blob);
+        
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register(swUrl).catch(err => console.log('SW registration failed'));
+        }
+    </script>
+</body>
+</html>
