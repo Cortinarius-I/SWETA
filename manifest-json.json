@@ -1,0 +1,149 @@
+{
+  "name": "SWETA - Shitty Work Executive Tracking Assistant",
+  "short_name": "SWETA",
+  "description": "Your adorable K-pop themed work tracking buddy! Helps you log your daily work activities with scheduled check-ins throughout the day.",
+  "start_url": "./index.html",
+  "id": "/sweta-pwa/",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "background_color": "#ffe4f4",
+  "theme_color": "#ff6b9d",
+  "orientation": "portrait-primary",
+  "categories": ["productivity", "utilities", "lifestyle"],
+  "lang": "en-US",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
+  "screenshots": [
+    {
+      "src": "screenshot1.png",
+      "sizes": "540x960",
+      "type": "image/png",
+      "label": "SWETA main chat interface"
+    },
+    {
+      "src": "screenshot2.png",
+      "sizes": "540x960",
+      "type": "image/png",
+      "label": "SWETA settings panel"
+    }
+  ],
+  "icons": [
+    {
+      "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAA7AAAAOwBeShxvQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAUlSURBVGiB7ZpfbBtFFMZ/s7t27PgvcRzHTuI4aZyQNAkJVKFKRaQqQqiAVEEQEhLiAQkeeOGFB4R4QDwgISEhIR4QQkJUCFGBCi1SUdO0NG3TNP/rxHH8L47j2F7ba3t3h1mvd9fe9Tqp3aQt35NGOzP7zcw3M3NnZxaEEEIIIYQQQgghhBBCCCGEEEIIIYR4CDl37hx+/PFHfPvtt/j6669x+PBhfPHFF/jss8/w6aef4pNPPsFHH32EDz/8EB988AHee+89vPPOO3jrrbfw+uuv47XXXsOrr76KV155BS+//DJeeukl7Nu3D3v37kVbW9tDI8KBAwfw/PPP4+mnn8aePXvQ3d2NlpYWNDQ0wGw2w2AwQKfTQa1WQ6FQgKIoUBQFmqZB0zRomgbDMGAYBizLgmVZsCwLhmHAMAzkcjlyuRzGxsYwNjaGwcFB9Pb24syZMzh+/DhOnDgBl8t1XwrR3NyM559/Hrt370ZnZyeMRiPUajUYhtn0+4QQxONxRKNRhMNhBINBjI+Po7+/HxcvXsSFCxfg8XjuGRGqq6uxf/9+vPjii+js7ERVVRVomt60wOsBIQSJRALRaBThcBjBYBAejwd9fX24dOkSLl68iImJiS0VoaGhAQcPHsShQ4fQ0dEBrVYLiqLuurB3CiEEyWQS4XAYgUAAfr8fHo8HV69eRW9vL/r6+uD1ejdNhNraWrz88st49dVX0d7eDo1Gs9BC3CsghCCVSiESiWBqagp+vx8ejweXL1/GqVOncOHCBczOzt6xCHV1dXjttddw6NAhNDc3g2GYewZ8PRAQEMKRSqUQjUYRDAbh8/ngdrtx7tw5HD9+HKdPn0YikShbhL179+Ltt9/GM888A5VKhaGhIdTX15eakg8FBISIQUhAKo8CEYlEwuHwvGez2dDb24sjR47g6NGjGB8fl01JSUlJCcdx3IsvvMB5PJ6SgZLPy9LD8uLzTdJi3O25XC5ns9m4Q4cOcQzDlIycTCa5N998k5uamioZqBJQKgBCyj3j8fhnlUplCcdx3CuvvMJFo9FSL3CvvfYa5/V6H3oB8iqo6XQ653K5Sl7ctWsXx7IsJ/58i6IoimOqqzm73S4beKm8vGdQKkAKU1NThVt+QoicAlarlaupqSn2RM/Tp08X/vBBhFxeigCjo6McRVElAnz00UfcrVu3HlgBBASWJIDRaOTsdnvJy7FYjGtoaOBsNltxY+O5DASEJJfpGRAQElU6AAKQ7PWSAHa7nWtsbFz4R7du3eI+++wz7ty5c1wul3tgBZCLkgSwWCxcfX19SdvQ0BD34YcfFg6CZ2Zm7plHCgpRGRcqUiwWI52dnRgaGio5SDp16hQ++eQTbN++HW+++SaeeOIJaDSaO956ihBCwHEccrkcOI6DxWLZdGxbCbfbjVu3buHmzZvo6+vD5cuX4Xa7C/U2mw1dXV3Ytm1bYbrKRjgcJl1dXRgYGJAVAADOnj2Lzz//HLW1tXj77bfx3HPPQavVAgBfPw+QX8SiyfsD/HkBPLPZzF/H4/GUhH0z0Wg0CAaDGBwcRH9/P65du4YbN27g1q1b4DiuJGar1YrOzk60tLRItsnBaDSSrq4u9PT0FAKTOxECgFu3buGLL77AV199hZ07d+KNN97As88+C71eDwCgKEr02EII4TiOS6fTpb3wy0E0GiXBYBDBYBA+n2/+w1wvfxCxfft2tLa2Yu7/Grcdr7xqNBri8XhwX0AIIdFolExPT8Pv92N8fBzXr19HT08Prl27htHRUcRisU1r8F7h/5IXQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBBCCCGEfPz5DVMQaL0J3N8SAAAAAElFTkSuQmCC",
+      "sizes": "48x48",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/png;base64,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",
+      "sizes": "48x48",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Log Work",
+      "short_name": "Log",
+      "description": "Quick log your current work",
+      "url": "./index.html?action=log",
+      "icons": [
+        {
+          "src": "icon-96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Settings",
+      "short_name": "Settings",
+      "description": "Configure SWETA settings",
+      "url": "./index.html?action=settings",
+      "icons": [
+        {
+          "src": "icon-96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "protocol_handlers": [
+    {
+      "protocol": "web+sweta",
+      "url": "./index.html?url=%s"
+    }
+  ],
+  "share_target": {
+    "action": "./index.html",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "file",
+          "accept": ["text/*", "image/*"]
+        }
+      ]
+    }
+  },
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": ["navigate-existing", "auto"]
+  }
+}
