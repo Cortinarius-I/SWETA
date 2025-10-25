@@ -2,10 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
     <title>SWETA - Your Work Tracking Buddy 💜</title>
-    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiU1dFVEEgLSBXb3JrIFRyYWNrZXIiLCJzaG9ydF9uYW1lIjoiU1dFVEEiLCJzdGFydF91cmwiOiIuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiI2ZmZTRmNCIsInRoZW1lX2NvbG9yIjoiI2ZmNmI5ZCIsIm9yaWVudGF0aW9uIjoicG9ydHJhaXQifQ==">
+    <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#ff6b9d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
         
@@ -22,7 +25,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 0;
+            margin: 0;
             animation: backgroundShift 15s ease infinite;
             background-size: 200% 200%;
         }
@@ -42,8 +46,24 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            height: 650px;
+            height: 100vh;
+            max-height: 650px;
             border: 3px solid rgba(255, 255, 255, 0.5);
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                border-radius: 0;
+                max-height: 100vh;
+                height: 100vh;
+                border: none;
+            }
+        }
+
+        @media (min-width: 501px) {
+            body {
+                padding: 20px;
+            }
         }
 
         .header {
@@ -885,28 +905,108 @@
             }, 3000);
         }
 
-        // Service Worker for PWA
-        const swCode = `
-            self.addEventListener('install', event => {
-                self.skipWaiting();
-            });
-            
-            self.addEventListener('activate', event => {
-                event.waitUntil(clients.claim());
-            });
-            
-            self.addEventListener('fetch', event => {
-                event.respondWith(fetch(event.request));
-            });
-        `;
-        
-        // Create service worker
-        const blob = new Blob([swCode], { type: 'application/javascript' });
-        const swUrl = URL.createObjectURL(blob);
-        
-        // Register service worker
+        // Service Worker Registration
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register(swUrl).catch(err => console.log('SW registration failed'));
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                        
+                        // Check for updates periodically
+                        setInterval(() => {
+                            registration.update();
+                        }, 3600000); // Check every hour
+                        
+                        // Handle updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // New service worker available
+                                    if (confirm('New version available! Reload to update?')) {
+                                        newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        });
+                    })
+                    .catch(error => {
+                        console.log('SW registration failed: ', error);
+                    });
+            });
+            
+            // Handle messages from service worker
+            navigator.serviceWorker.addEventListener('message', event => {
+                if (event.data && event.data.type === 'SYNC_REQUIRED') {
+                    // Handle sync when back online
+                    syncOfflineData();
+                }
+            });
+        }
+        
+        // Check if online/offline
+        window.addEventListener('online', () => {
+            console.log('Back online');
+            syncOfflineData();
+        });
+        
+        window.addEventListener('offline', () => {
+            console.log('Gone offline');
+        });
+        
+        // Function to sync offline data
+        function syncOfflineData() {
+            const offlineData = localStorage.getItem('offlineMessages');
+            if (offlineData && scriptUrl) {
+                const messages = JSON.parse(offlineData);
+                messages.forEach(msg => {
+                    saveToGoogleSheets(msg.userMessage, msg.timeSlot);
+                });
+                localStorage.removeItem('offlineMessages');
+            }
+        }
+        
+        // Modified save function to handle offline
+        async function saveToGoogleSheets(userMessage, timeSlot) {
+            if (!scriptUrl) return;
+            
+            const data = {
+                timestamp: new Date().toISOString(),
+                timeSlot: timeSlot,
+                workDone: userMessage,
+                date: new Date().toLocaleDateString('en-IN')
+            };
+            
+            if (!navigator.onLine) {
+                // Save to local storage if offline
+                const offlineData = localStorage.getItem('offlineMessages') || '[]';
+                const messages = JSON.parse(offlineData);
+                messages.push(data);
+                localStorage.setItem('offlineMessages', JSON.stringify(messages));
+                console.log('Saved offline, will sync when online');
+                return;
+            }
+            
+            try {
+                const response = await fetch(scriptUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                console.log('Data saved to Google Sheets');
+            } catch (error) {
+                console.error('Error saving to Google Sheets:', error);
+                // Save to offline storage as fallback
+                const offlineData = localStorage.getItem('offlineMessages') || '[]';
+                const messages = JSON.parse(offlineData);
+                messages.push(data);
+                localStorage.setItem('offlineMessages', JSON.stringify(messages));
+            }
         }
     </script>
 </body>
